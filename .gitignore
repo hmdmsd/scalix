@@ -1,0 +1,27 @@
+# sbt files
+target/
+project/target/
+project/project/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+data/
+*.tmp
+
+# API key files (if stored in separate files)
+*.key

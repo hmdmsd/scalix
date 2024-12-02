@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalix.iml" filepath="$PROJECT_DIR$/.idea/modules/scalix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scalix.scalix-build.iml" filepath="$PROJECT_DIR$/.idea/modules/scalix.scalix-build.iml" />
     </modules>
   </component>
 </project>
