@@ -1,34 +1,21 @@
-# Scalix TP Project
-
-## Overview
-This project is a Scala application that interacts with the [TMDB API](https://www.themoviedb.org/) to answer questions about actor collaborations and movie details. It demonstrates JSON manipulation, functional programming, and caching techniques.
-
-## Features
-- Retrieve actor IDs based on their names.
-- Fetch movies in which an actor has appeared.
-- Identify directors of specific movies.
-- Find collaborations between two actors (common movies and their directors).
-- Efficient data caching to minimize API calls.
+# Scalix Movie Application
 
 ## Requirements
-- Scala 3.3.4
-- sbt (Scala Build Tool)
-- TMDB API Key
+- Scala version: 3.3.4
+- sbt version: 1.8.2
 
-## Setup
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/your-repo/scalix-tp.git
-   cd scalix-tp
+## Dependencies
+- json4s for JSON parsing.
 
-Add your TMDB API key to the TMDBClient file:
+## Instructions
+1. Clone the repository and navigate to the project root.
+2. Ensure your API key is set in `TMDBClient.scala`.
+3. Run the project using `sbt run`.
 
-val apiKey: String = "YOUR_API_KEY"
+## Design Choices
+- **Two-Level Cache**:
+   - Primary cache (in-memory) for quick lookup.
+   - Secondary cache (file system) for persistence.
 
-Notes
-Caching: All API responses are cached in the data/ directory to avoid unnecessary API calls.
-Error Handling: Ensure proper error handling for network issues or invalid API responses.
-API Key Security: Do not expose your API key in public repositories.
-
-
-Authors: Messaoud Hamdi & Mohamed Amine Dahech
+- **Object-Oriented Design**:
+   - `Actor`, `Movie`, and `Director` classes encapsulate behaviors.

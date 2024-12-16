@@ -1,44 +1,30 @@
-import scala.io.Source
-import org.json4s._
-import org.json4s.native.JsonMethods._
-import CacheManager._
+import org.scalatest.funsuite.AnyFunSuite
+import TMDBClient._
 
-object TMDBClient {
+class TMDBClientTest extends AnyFunSuite {
 
-  val apiKey: String = "cc8e82b02aeda3e3d9bbacdad30d5fba"
-
-  def findActorId(name: String, surname: String): Option[Int] = {
-    val query = s"${name.trim}+${surname.trim}".replace(" ", "+")
-    val url = s"https://api.themoviedb.org/3/search/person?api_key=$apiKey&query=$query"
-    val response = getCachedResponse(s"actor_search_$query.json", url)
-    val json = parse(response)
-    (json \ "results").extract[List[Map[String, Any]]].headOption.flatMap(_.get("id")).map(_.toString.toInt)
+  test("findActorId should return a valid actor ID for Christian Bale") {
+    val actorId = findActorId("Christian", "Bale")
+    assert(actorId.nonEmpty, "Actor ID for Christian Bale should not be empty")
   }
 
-  def findActorMovies(actorId: Int): Set[(Int, String)] = {
-    val url = s"https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=$apiKey"
-    val response = getCachedResponse(s"actor_movies_$actorId.json", url)
-    val json = parse(response)
-    (json \ "cast").extract[List[Map[String, Any]]]
-      .map(movie => (movie("id").toString.toInt, movie("title").toString))
-      .toSet
+  test("findActorMovies should return a non-empty list for a valid actor ID") {
+    val actorId = findActorId("Christian", "Bale").getOrElse(fail("Actor ID not found"))
+    val movies = findActorMovies(actorId)
+    assert(movies.nonEmpty, "Movies for Christian Bale should not be empty")
   }
 
-  def findMovieDirector(movieId: Int): Option[(Int, String)] = {
-    val url = s"https://api.themoviedb.org/3/movie/$movieId/credits?api_key=$apiKey"
-    val response = getCachedResponse(s"movie_director_$movieId.json", url)
-    val json = parse(response)
-    (json \ "crew").extract[List[Map[String, Any]]]
-      .find(_.get("job").contains("Director"))
-      .map(crew => (crew("id").toString.toInt, crew("name").toString))
+  test("findMovieDirector should return Christopher Nolan for The Dark Knight") {
+    val movieId = 49026 // The Dark Knight
+    val director = findMovieDirector(movieId)
+    assert(director.nonEmpty, "Director for The Dark Knight should not be empty")
+    assert(director.get._2 == "Christopher Nolan", "Director should be Christopher Nolan")
   }
 
-  def collaboration(actor1: (String, String), actor2: (String, String)): Set[(String, String)] = {
-    val actor1Movies = findActorId(actor1._1, actor1._2).map(findActorMovies).getOrElse(Set.empty)
-    val actor2Movies = findActorId(actor2._1, actor2._2).map(findActorMovies).getOrElse(Set.empty)
-    val commonMovies = actor1Movies.intersect(actor2Movies)
-    commonMovies.flatMap { case (movieId, movieTitle) =>
-      findMovieDirector(movieId).map(director => (director._2, movieTitle))
-    }
+  test("collaboration should find common movies between Christian Bale and Michael Caine") {
+    val actor1 = ("Christian", "Bale")
+    val actor2 = ("Michael", "Caine")
+    val collaborations = collaboration(actor1, actor2)
+    assert(collaborations.nonEmpty, "Collaborations between Christian Bale and Michael Caine should not be empty")
   }
 }
